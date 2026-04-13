@@ -1,0 +1,39 @@
+@import "tailwindcss";
+
+body{
+    color: white;
+    overflow-x: hidden;
+}
+.StartingContainer {
+  background: #000;
+  height: 100vh;
+  width: 100vw;
+  color: rgb(200, 199, 199);
+  justify-content: center;
+  align-items: center;
+  display: flex;
+  position: absolute;
+  z-index: 10;
+  position: fixed;
+}
+
+.StartingContainer span {
+  font-size: 10rem;
+  position: absolute;
+  background: linear-gradient(to right, rgb(246, 179, 131), rgb(108, 31, 13));
+  background-clip: text;
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+}   
+     
+.mouse{
+  background: linear-gradient(gray , white);
+}
+
+
+.page1 {
+  background: url("background.jpg");
+  background-repeat: no-repeat;
+  background-position: center center;
+  background-size: cover;   
+}
