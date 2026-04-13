@@ -30,10 +30,12 @@ body{
   background: linear-gradient(gray , white);
 }
 
-
+/* PAGE ! */
 .page1 {
   background: url("background.jpg");
   background-repeat: no-repeat;
   background-position: center center;
   background-size: cover;   
 }
+
+
