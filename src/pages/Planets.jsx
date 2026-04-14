@@ -102,27 +102,27 @@ const Planets = () => {
   return (
     <div ref={containerRef} className="overflow-hidden bg-black">
       {/* Horizontal Wrapper */}
-      <div ref={sliderRef} className="flex h-screen w-[800vw]">
+      <div ref={sliderRef} className="flex relative h-screen w-[800vw]">
         {planetsData.map((planet, index) => (
           <div
             key={index}
-            className="slide w-full h-screen flex items-center justify-center"
+            className="slide w-full h-screen flex items-center justify-center "
           >
-            <div className="relative w-full aspect-square">
+            <div className="absolute w-full aspect-square">
               <img
                 src={planet.image}
                 alt={planet.name}
                 className="w-full h-full object-contain shadow-[0_0_50px_rgba(255,255,255,0.2)]"
               />
             </div>
-            <div className="planet-content z-10 relative text-white text-center max-w-2xl px-6">
+            <div className="planet-content z-10 relative text- text-center max-w-2xl px-6">
               <h1 className="text-7xl font-black uppercase tracking-tighter mb-6 italic">
                 {planet.name}
               </h1>
               <p className="text-xl text-gray-300 font-light leading-relaxed">
                 {planet.description}
               </p>
-              <div className="mt-8 h-[2px] w-24 bg-white/50 mx-auto"></div>
+              <div className="mt-8 h-0.5 w-24 bg-white/50 mx-auto"></div>
             </div>
           </div>
         ))}
