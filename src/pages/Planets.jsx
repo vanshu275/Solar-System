@@ -59,37 +59,55 @@ const Planets = () => {
         "Neptune is the farthest planet from the Sun. It has the strongest winds in the solar system.",
     },
   ];
-
   useGSAP(
     () => {
       const slides = gsap.utils.toArray(".slide");
 
-      // 1. Horizontal Movement Timeline
-      gsap.to(slides, {
-        xPercent: -100 * (slides.length - 1), // Slides ko left shift karna
+      const mainTween = gsap.to(slides, {
+        xPercent: -100 * (slides.length - 1),
         ease: "none",
         scrollTrigger: {
           trigger: containerRef.current,
-          pin: true, // Page ko rok ke rakhna jab tak slides khatam na ho
-          scrub: 1, // Scroll ke saath smooth movement (smoothness yahan se aati hai)
-          snap: 1 / (slides.length - 1), // Har planet pe auto-snap karega
-          end: "+=3000", // Kitna lamba scroll chalega
+          pin: true,
+          scrub: 1,
+          snap: 1 / (slides.length - 1),
+          end: "+=3000",
         },
       });
 
-      // 2. Individual Slide Animations (Zoom effect)
       slides.forEach((slide) => {
+        const img = slide.querySelector("img");
+        const content = slide.querySelector(".planet-content");
+
+        // Image Zoom Effect
         gsap.fromTo(
-          slide.querySelector("img"),
-          { scale: 0.6, opacity: 0.4 },
+          img,
+          { scale: 0.3, opacity: 0,},
           {
             scale: 1,
             opacity: 1,
             scrollTrigger: {
               trigger: slide,
-              containerAnimation: gsap.effects.horizontalScroll, // Reference for horizontal
-              start: "left center", // Jab slide ka left part center mein aaye
-              end: "right center", // Jab slide ka right part center se nikal jaye
+              containerAnimation: mainTween,
+              start: "left center",
+              end: "right center",
+              scrub: true,
+            },
+          },
+        );
+
+        // Text Fade-up Effect
+        gsap.fromTo(
+          content,
+          { y: 50, opacity: 0 },
+          {
+            y: 0,
+            opacity: 1,
+            scrollTrigger: {
+              trigger: slide,
+              containerAnimation: mainTween,
+              start: "left 60%",
+              end: "left center",
               scrub: true,
             },
           },
@@ -98,17 +116,20 @@ const Planets = () => {
     },
     { scope: containerRef },
   );
-
   return (
-    <div ref={containerRef} className="overflow-hidden bg-black">
+    <div id="planets" ref={containerRef} className="overflow-hidden bg-black">
       {/* Horizontal Wrapper */}
-      <div ref={sliderRef} className="flex relative h-screen w-[800vw]">
+      <div
+        ref={sliderRef}
+        className="flex relative h-screen"
+        style={{ width: `${planetsData.length * 100}vw` }}
+      >
         {planetsData.map((planet, index) => (
           <div
             key={index}
             className="slide w-full h-screen flex items-center justify-center "
           >
-            <div className="absolute w-full aspect-square">
+            <div className=" w-full aspect-square">
               <img
                 src={planet.image}
                 alt={planet.name}
