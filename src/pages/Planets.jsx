@@ -129,7 +129,7 @@ const Planets = () => {
             key={index}
             className="slide w-full h-screen flex items-center justify-center "
           >
-            <div className=" w-full aspect-square">
+            <div className="absolute w-full aspect-square">
               <img
                 src={planet.image}
                 alt={planet.name}
