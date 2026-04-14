@@ -7,13 +7,14 @@ import Footer from "./pages/Footer";
 
 export default function App() {
   return (
-    <div className="container">
-      <Mouse />
+    <div className="relative bg-black">
       {/* <Starting /> */}
-      
-      <Frontpage />
-      <Planets />
-      <Facts />
+      {/* <Mouse /> */}
+      <div className="relative z-10 bg-black mb-[95vh]">
+        <Frontpage />
+        <Planets />
+        <Facts />
+      </div>
       <Footer />
     </div>
   );
