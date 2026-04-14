@@ -1,4 +1,4 @@
-import {useRef } from "react";
+import React, { useRef } from "react";
 import gsap from "gsap";
 import { useGSAP } from "@gsap/react";
 import { ScrollTrigger } from "gsap/ScrollTrigger";
@@ -7,7 +7,8 @@ gsap.registerPlugin(ScrollTrigger);
 
 const Planets = () => {
   const containerRef = useRef(null);
-  const slidesRef = useRef([]);
+  const sliderRef = useRef(null);
+
   const planetsData = [
     {
       name: "mercury",
@@ -59,85 +60,73 @@ const Planets = () => {
     },
   ];
 
-
-
   useGSAP(
     () => {
-      const slides = slidesRef.current;
+      const slides = gsap.utils.toArray(".slide");
 
-      // Timeline for scroll-linked animations
-      const tl = gsap.timeline({
+      // 1. Horizontal Movement Timeline
+      gsap.to(slides, {
+        xPercent: -100 * (slides.length - 1), // Slides ko left shift karna
+        ease: "none",
         scrollTrigger: {
           trigger: containerRef.current,
-          start: "top top",
-          end: `+=${planetsData.length * 30}%`, // Scroll length depends on item count
-          pin: true,
-          scrub: 1.5, // Thoda higher scrub value for extra smoothness
+          pin: true, // Page ko rok ke rakhna jab tak slides khatam na ho
+          scrub: 1, // Scroll ke saath smooth movement (smoothness yahan se aati hai)
+          snap: 1 / (slides.length - 1), // Har planet pe auto-snap karega
+          end: "+=3000", // Kitna lamba scroll chalega
         },
       });
 
-      slides.forEach((slide, i) => {
-        if (i === 0) return; // First slide stays visible initially
-
-        // Har slide ke liye entrance animation
-        tl.fromTo(
-          slide,
-          { clipPath: "inset(100% 0% 0% 0%)", opacity: 0 }, // Neeche se upar aayega
+      // 2. Individual Slide Animations (Zoom effect)
+      slides.forEach((slide) => {
+        gsap.fromTo(
+          slide.querySelector("img"),
+          { scale: 0.6, opacity: 0.4 },
           {
-            clipPath: "inset(0% 0% 0% 0%)",
+            scale: 1,
             opacity: 1,
-            ease: "none",
+            scrollTrigger: {
+              trigger: slide,
+              containerAnimation: gsap.effects.horizontalScroll, // Reference for horizontal
+              start: "left center", // Jab slide ka left part center mein aaye
+              end: "right center", // Jab slide ka right part center se nikal jaye
+              scrub: true,
+            },
           },
-        )
-          .from(
-            slide.querySelector(".planet-content"),
-            { y: 100, opacity: 0, duration: 0.5 },
-            "<", // Pichli animation ke saath start hoga
-          )
-          .from(
-            slide.querySelector(".planet-bg"),
-            { scale: 1.5, duration: 1 },
-            "<",
-          );
+        );
       });
     },
     { scope: containerRef },
   );
 
   return (
-    <div
-      ref={containerRef}
-      className="relative w-full h-screen overflow-hidden bg-black"
-    >
-      {planetsData.map((planet, index) => (
-        <div
-          key={index}
-          ref={(el) => (slidesRef.current[index] = el)}
-          className="absolute inset-0 w-full h-screen flex items-center justify-center overflow-hidden"
-          style={{ zIndex: index }}
-        >
-          {/* Background Image with Parallax Class */}
-          <img
-            src={planet.image}
-            alt={planet.name}
-            className="planet-bg absolute inset-0 w-full h-full object-cover"
-          />
-
-          {/* Overlay */}
-          <div className="absolute inset-0 bg-linear-to-b from-black/20 via-black/40 to-black/80"></div>
-
-          {/* Content Wrapper */}
-          <div className="planet-content relative text-white text-center max-w-2xl px-6">
-            <h1 className="text-7xl font-black uppercase tracking-tighter mb-6 italic">
-              {planet.name}
-            </h1>
-            <p className="text-xl text-gray-300 font-light leading-relaxed">
-              {planet.description}
-            </p>
-            <div className="mt-8 h-0.5 w-24 bg-white/50 mx-auto"></div>
+    <div ref={containerRef} className="overflow-hidden bg-black">
+      {/* Horizontal Wrapper */}
+      <div ref={sliderRef} className="flex h-screen w-[800vw]">
+        {planetsData.map((planet, index) => (
+          <div
+            key={index}
+            className="slide w-full h-screen flex items-center justify-center"
+          >
+            <div className="relative w-full aspect-square">
+              <img
+                src={planet.image}
+                alt={planet.name}
+                className="w-full h-full object-contain shadow-[0_0_50px_rgba(255,255,255,0.2)]"
+              />
+            </div>
+            <div className="planet-content z-10 relative text-white text-center max-w-2xl px-6">
+              <h1 className="text-7xl font-black uppercase tracking-tighter mb-6 italic">
+                {planet.name}
+              </h1>
+              <p className="text-xl text-gray-300 font-light leading-relaxed">
+                {planet.description}
+              </p>
+              <div className="mt-8 h-[2px] w-24 bg-white/50 mx-auto"></div>
+            </div>
           </div>
-        </div>
-      ))}
+        ))}
+      </div>
     </div>
   );
 };
